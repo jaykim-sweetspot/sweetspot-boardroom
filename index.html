@@ -6,7 +6,7 @@
 <title>Sweetspot AI Board Room</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap');
-
+ 
   :root {
     --bg: #0a0a0f;
     --bg2: #111118;
@@ -33,9 +33,9 @@
     --cxo: #f0d44e;
     --cso: #f05e5e;
   }
-
+ 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
   body {
     font-family: 'Noto Sans KR', sans-serif;
     background: var(--bg);
@@ -43,10 +43,10 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-
+ 
   /* ── LAYOUT ── */
   .app { display: flex; height: 100vh; }
-
+ 
   /* ── SIDEBAR ── */
   .sidebar {
     width: 280px;
@@ -57,18 +57,18 @@
     flex-direction: column;
     overflow: hidden;
   }
-
+ 
   .sidebar-scroll {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
   }
-
+ 
   .sidebar-header {
     padding: 24px 20px 16px;
     border-bottom: 1px solid var(--border);
   }
-
+ 
   .logo {
     font-family: 'DM Serif Display', serif;
     font-size: 22px;
@@ -77,7 +77,7 @@
     line-height: 1;
   }
   .logo span { color: var(--text2); font-style: italic; font-size: 13px; display: block; margin-top: 2px; font-family: 'Noto Sans KR'; font-weight: 300; letter-spacing: 0; }
-
+ 
   .sidebar-section { padding: 16px 16px 8px; }
   .sidebar-label {
     font-size: 10px;
@@ -87,7 +87,7 @@
     color: var(--text3);
     margin-bottom: 10px;
   }
-
+ 
   /* ── MODE SELECTOR ── */
   .mode-btns { display: flex; flex-direction: column; gap: 4px; }
   .mode-btn {
@@ -107,7 +107,7 @@
   .mode-btn:hover { background: var(--bg3); color: var(--text); }
   .mode-btn.active { background: rgba(124,106,245,0.15); color: var(--accent2); border: 1px solid rgba(124,106,245,0.25); }
   .mode-btn .icon { font-size: 16px; width: 20px; text-align: center; }
-
+ 
   /* ── AGENT PILLS ── */
   .agent-list { display: flex; flex-direction: column; gap: 3px; }
   .agent-pill {
@@ -125,7 +125,7 @@
   .agent-role { font-size: 10px; color: var(--text3); }
   .agent-check { font-size: 12px; color: var(--accent2); opacity: 0; transition: opacity 0.15s; }
   .agent-pill.selected .agent-check { opacity: 1; }
-
+ 
   .select-all-btn {
     width: 100%;
     padding: 7px;
@@ -140,16 +140,16 @@
     margin-bottom: 8px;
   }
   .select-all-btn:hover { background: var(--bg4); color: var(--text); }
-
+ 
   .sidebar-bottom {
     margin-top: auto;
     padding: 16px;
     border-top: 1px solid var(--border);
   }
-
+ 
   /* ── MAIN AREA ── */
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
+ 
   /* ── HEADER BAR ── */
   .topbar {
     padding: 16px 24px;
@@ -160,7 +160,7 @@
   }
   .topbar-title { font-size: 15px; font-weight: 700; color: var(--text); }
   .topbar-meta { font-size: 12px; color: var(--text3); }
-
+ 
   .active-agents { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .agent-badge {
     padding: 3px 10px;
@@ -169,7 +169,7 @@
     font-weight: 600;
     border: 1px solid;
   }
-
+ 
   /* ── CHAT AREA ── */
   .chat-area {
     flex: 1;
@@ -179,7 +179,7 @@
     flex-direction: column;
     gap: 20px;
   }
-
+ 
   /* Welcome screen */
   .welcome {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -202,7 +202,7 @@
     transition: all 0.15s;
   }
   .welcome-chip:hover { background: var(--bg4); color: var(--text); border-color: var(--accent); }
-
+ 
   /* Messages */
   .msg-user {
     display: flex; justify-content: flex-end;
@@ -217,11 +217,11 @@
     line-height: 1.6;
     white-space: pre-wrap;
   }
-
+ 
   .msg-system {
     display: flex; flex-direction: column; gap: 12px;
   }
-
+ 
   /* Agent response card */
   .agent-card {
     background: var(--bg2);
@@ -234,7 +234,7 @@
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
+ 
   .agent-card-header {
     display: flex; align-items: center; gap: 12px;
     padding: 14px 18px;
@@ -257,7 +257,7 @@
     color: var(--text);
     white-space: pre-wrap;
   }
-
+ 
   /* Summary card */
   .summary-card {
     background: linear-gradient(135deg, rgba(124,106,245,0.1), rgba(212,168,83,0.08));
@@ -274,7 +274,7 @@
   .summary-section { margin-bottom: 14px; }
   .summary-section-label { font-size: 11px; font-weight: 700; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
   .summary-section p { font-size: 13px; line-height: 1.7; color: var(--text2); }
-
+ 
   /* Go/No-go table */
   .decision-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
   .decision-table th {
@@ -288,7 +288,7 @@
   .verdict.go { background: rgba(61,214,140,0.15); color: var(--green); }
   .verdict.nogo { background: rgba(240,94,94,0.15); color: var(--red); }
   .verdict.cond { background: rgba(240,149,78,0.15); color: var(--orange); }
-
+ 
   /* Loading */
   .loading-card {
     background: var(--bg2);
@@ -308,7 +308,7 @@
   .loading-dot:nth-child(3) { animation-delay: 0.4s; }
   @keyframes pulse { 0%,80%,100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
   .loading-text { font-size: 13px; color: var(--text3); }
-
+ 
   /* ── INPUT AREA ── */
   .input-area {
     padding: 16px 24px 24px;
@@ -326,7 +326,7 @@
     border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--text2);
   }
   .file-tag button { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
-
+ 
   .input-row {
     display: flex; gap: 10px; align-items: flex-end;
   }
@@ -348,7 +348,7 @@
   }
   .input-box:focus { border-color: var(--accent); }
   .input-box::placeholder { color: var(--text3); }
-
+ 
   .input-actions { display: flex; gap: 8px; align-items: center; }
   .btn-icon {
     width: 44px; height: 44px;
@@ -362,7 +362,7 @@
     transition: all 0.15s;
   }
   .btn-icon:hover { background: var(--bg4); color: var(--text); }
-
+ 
   .btn-send {
     width: 44px; height: 44px;
     border-radius: 10px;
@@ -376,9 +376,9 @@
   }
   .btn-send:hover { background: var(--accent2); }
   .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
-
+ 
   .input-hint { font-size: 11px; color: var(--text3); margin-top: 8px; }
-
+ 
   /* ── OUTPUT OPTIONS ── */
   .output-opts {
     display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
@@ -396,12 +396,12 @@
   }
   .output-btn:hover { background: var(--bg3); color: var(--text); }
   .output-btn.active { background: rgba(124,106,245,0.15); color: var(--accent2); border-color: rgba(124,106,245,0.35); }
-
+ 
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
-
+ 
   /* ── MARKDOWN-LIKE RENDERING ── */
   .agent-card-body strong { color: var(--gold2); font-weight: 700; }
   .agent-card-body em { color: var(--accent2); font-style: italic; }
@@ -411,7 +411,7 @@
   .risk-high { background: rgba(240,94,94,0.2); color: var(--red); }
   .risk-mid { background: rgba(240,149,78,0.2); color: var(--orange); }
   .risk-low { background: rgba(61,214,140,0.2); color: var(--green); }
-
+ 
   .btn-stop {
     width: 44px; height: 44px;
     border-radius: 10px;
@@ -429,7 +429,22 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(240,94,94,0.4); }
     50% { box-shadow: 0 0 0 6px rgba(240,94,94,0); }
   }
-
+ 
+  /* New chat button */
+  .btn-new-chat {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 12px;
+    font-family: 'Noto Sans KR';
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-new-chat:hover { background: var(--bg4); color: var(--text); border-color: var(--accent); }
+ 
   /* ── API KEY SETUP SCREEN ── */
   .setup-overlay {
     display: none;
@@ -480,7 +495,7 @@
   }
   .btn-setup:hover { background: var(--accent2); }
   .setup-error { font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
-
+ 
   /* API key indicator in topbar */
   .key-indicator {
     display: flex; align-items: center; gap: 6px;
@@ -497,7 +512,7 @@
     border-color: rgba(240,94,94,0.25);
     color: var(--red);
   }
-
+ 
   /* URL input modal */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
@@ -526,7 +541,7 @@
   .btn-cancel:hover { color: var(--text); }
   .btn-confirm { background: var(--accent); color: #fff; }
   .btn-confirm:hover { background: var(--accent2); }
-
+ 
   /* Formatted markdown output */
   .formatted-content h3 { color: var(--gold2); font-size: 15px; margin: 16px 0 8px; }
   .formatted-content h4 { color: var(--accent2); font-size: 13px; margin: 12px 0 6px; }
@@ -541,15 +556,15 @@
 </style>
 </head>
 <body>
-
+ 
 <div class="app">
-
+ 
   <!-- ── SIDEBAR ── -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo">Board Room<span>Sweetspot AI</span></div>
     </div>
-
+ 
     <div class="sidebar-scroll">
       <div class="sidebar-section">
         <div class="sidebar-label">회의 모드</div>
@@ -571,22 +586,22 @@
         </button>
       </div>
     </div>
-
+ 
     <div class="sidebar-section">
       <div class="sidebar-label">에이전트 선택</div>
       <button class="select-all-btn" onclick="toggleAll()">⚡ 전체 선택 / 해제</button>
       <div class="agent-list" id="agentList"></div>
     </div>
-
+ 
     </div><!-- /sidebar-scroll -->
-
+ 
     <div class="sidebar-bottom">
       <div style="font-size:11px;color:var(--text3);line-height:1.6;">
         💡 <strong style="color:var(--text2)">팁</strong>: 에이전트를 선택하고 아젠다를 입력하세요. PDF 파일 또는 Google Drive URL 첨부 가능.
       </div>
     </div>
   </aside>
-
+ 
   <!-- ── MAIN ── -->
   <main class="main">
     <!-- Topbar -->
@@ -595,9 +610,12 @@
         <div class="topbar-title" id="topbarTitle">전체 경영회의</div>
         <div class="topbar-meta" id="topbarMeta">7명의 C-레벨 에이전트가 대기 중</div>
       </div>
-      <div class="active-agents" id="activeBadges"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="active-agents" id="activeBadges"></div>
+        <button class="btn-new-chat" onclick="newChat()" title="새 대화 시작">🏠 새 대화</button>
+      </div>
     </div>
-
+ 
     <!-- Chat -->
     <div class="chat-area" id="chatArea">
       <div class="welcome" id="welcomeScreen">
@@ -613,7 +631,7 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- Output options -->
     <div class="input-area">
       <div class="output-opts" id="outputOpts">
@@ -622,9 +640,9 @@
         <button class="output-btn" data-fmt="summary" onclick="setFormat('summary')">요약 중심</button>
         <button class="output-btn" data-fmt="action" onclick="setFormat('action')">액션 아이템만</button>
       </div>
-
+ 
       <div class="file-preview" id="filePreview"></div>
-
+ 
       <div class="input-row">
         <textarea class="input-box" id="inputBox" rows="2"
           placeholder="아젠다를 입력하세요... (Shift+Enter로 줄바꿈, Enter로 전송)"
@@ -642,14 +660,14 @@
     </div>
   </main>
 </div>
-
+ 
 <!-- API Key Setup Overlay -->
 <div class="setup-overlay" id="setupOverlay">
   <div class="setup-card">
     <div class="setup-logo">🏛️ Board Room</div>
     <div style="font-family:'DM Serif Display';font-size:20px;color:var(--text);margin-bottom:10px;">Sweetspot AI 경영회의 시스템</div>
     <div class="setup-sub">시작하려면 Anthropic API 키를 입력하세요.<br>키는 이 브라우저에만 저장되며, 외부로 전송되지 않습니다.</div>
-
+ 
     <div class="setup-label">Anthropic API Key</div>
     <input class="setup-input" type="password" id="apiKeyInput"
       placeholder="sk-ant-api03-..."
@@ -662,9 +680,9 @@
     <div class="setup-error" id="setupError"></div>
   </div>
 </div>
-
+ 
 <!-- Key Change Button (injected into topbar via JS) -->
-
+ 
 <div class="modal-overlay" id="urlModal">
   <div class="modal">
     <h3>🔗 외부 링크 첨부</h3>
@@ -676,11 +694,11 @@
     </div>
   </div>
 </div>
-
+ 
 <script>
 // ── API KEY ──
 let API_KEY = localStorage.getItem('ss_api_key') || '';
-
+ 
 function saveApiKey() {
   const val = document.getElementById('apiKeyInput').value.trim();
   if (!val.startsWith('sk-ant-')) {
@@ -694,14 +712,14 @@ function saveApiKey() {
   document.getElementById('setupOverlay').classList.remove('open');
   updateKeyIndicator();
 }
-
+ 
 function openSetup() {
   document.getElementById('apiKeyInput').value = API_KEY;
   document.getElementById('setupError').style.display = 'none';
   document.getElementById('setupOverlay').classList.add('open');
   setTimeout(() => document.getElementById('apiKeyInput').focus(), 100);
 }
-
+ 
 function updateKeyIndicator() {
   let ind = document.getElementById('keyIndicator');
   if (!ind) {
@@ -718,8 +736,8 @@ function updateKeyIndicator() {
     ind.innerHTML = `⚠️ API 키 없음 — 클릭해서 설정`;
   }
 }
-
-
+ 
+ 
 const AGENTS = {
   CFO: { icon:'💼', color:'var(--cfo)', role:'최고재무책임자', emoji:'💼' },
   CHRO: { icon:'👥', color:'var(--chro)', role:'최고인사책임자', emoji:'👥' },
@@ -729,7 +747,7 @@ const AGENTS = {
   CXO: { icon:'🤖', color:'var(--cxo)', role:'최고AI혁신책임자', emoji:'🤖' },
   CSO: { icon:'🎯', color:'var(--cso)', role:'최고전략책임자', emoji:'🎯' },
 };
-
+ 
 // ── AGENT PERSONAS (for API prompts) ──
 const PERSONAS = {
   CFO: `당신은 스위트스팟의 CFO입니다. 페르소나: 김범석(쿠팡)의 공격적 자본 배분 + 워런 버핏의 현금흐름 원칙. 철학: "흑자는 목적지가 아니라 연료다." 공헌이익률, 현금흐름, 투자회수 시점을 항상 명시. 리스크를 열거하고 최악의 시나리오도 언급. 방어적이지 않고 성장 친화적. 한국 스타트업 VC 생태계 맥락 이해.`,
@@ -740,7 +758,7 @@ const PERSONAS = {
   CXO: `당신은 스위트스팟의 CXO(최고AI혁신책임자)입니다. 페르소나: 앤드류 응의 AI 리터러시 전파 + 네이버 하이퍼클로바의 한국 비즈니스 AI 적용 + 오드컨셉의 오프라인-디지털 AI 실사용. 철학: "AI는 도구다. 망치를 쥐고 모든 것을 못으로 보면 안 된다." 데이터가 있는지 먼저 확인. AI 도입 ROI를 CFO 언어로 번역. 6개월 MVP 가능성 체크. AI 만능주의 거부.`,
   CSO: `당신은 스위트스팟의 CSO입니다. 페르소나: 마이클 포터의 포지셔닝/트레이드오프 프레임 + 장병규의 스타트업 스케일업 철학 + 버질 아블로의 틈새→주류 브랜드 전략. 철학: "전략의 본질은 무엇을 하지 않을지 결정하는 것이다." 530억 매출 목표 포트폴리오 최적화. 팝업 시장 3~5년 구조 변화 시뮬레이션. 각 선택의 기회비용 명시. 거창한 비전보다 실행 경로.`,
 };
-
+ 
 const COMPANY_CONTEXT = `
 스위트스팟(Sweetspot) 회사 맥락:
 - 팝업스토어 전문 회사. 2024년 첫 흑자 달성, 강한 매출 성장세.
@@ -749,7 +767,7 @@ const COMPANY_CONTEXT = `
 - 2026 목표 매출: 약 530억원
 - CEO(Jay): 데이터 기반, 빠른 실행, 집단 의견 수렴 후 본인 최종 결정
 `;
-
+ 
 // ── STATE ──
 let currentMode = 'all';
 let selectedAgents = new Set(Object.keys(AGENTS));
@@ -759,7 +777,7 @@ let attachedUrls = [];
 let isLoading = false;
 let conversationHistory = [];
 let abortController = null;
-
+ 
 function stopAll() {
   if (abortController) {
     abortController.abort();
@@ -779,7 +797,35 @@ function stopAll() {
   chat.appendChild(div);
   scrollBottom();
 }
-
+ 
+// ── NEW CHAT ──
+function newChat() {
+  if (isLoading) {
+    if (!confirm('분석이 진행 중입니다. 중단하고 새 대화를 시작할까요?')) return;
+    stopAll();
+  }
+  const chat = document.getElementById('chatArea');
+  chat.innerHTML = `
+    <div class="welcome" id="welcomeScreen">
+      <div class="welcome-logo">🏛️</div>
+      <div style="font-family:'DM Serif Display';font-size:28px;color:var(--text);">AI 집단지성 경영회의</div>
+      <div class="welcome-sub">CEO의 아젠다를 입력하면 선택된 C-레벨 에이전트들이 각자의 전문 관점에서 분석하고, 집단지성으로 최적의 의사결정을 지원합니다.</div>
+      <div class="welcome-chips">
+        <div class="welcome-chip" onclick="fillPrompt('Popga 앱 MAU가 지난 분기 대비 15% 하락했다. 원인 진단과 대응 방향을 논의해줘.')">📉 MAU 하락 원인 분석</div>
+        <div class="welcome-chip" onclick="fillPrompt('2026년 상반기 핵심 채용 포지션과 우선순위를 논의해줘.')">👥 채용 우선순위</div>
+        <div class="welcome-chip" onclick="fillPrompt('Stage X 추가 공간 오픈 투자 여부를 Go/No-Go로 결정해줘.')">🏢 Stage X 확장 결정</div>
+        <div class="welcome-chip" onclick="fillPrompt('Popga 앱 유료화를 2분기 내 추진하려 한다. 각자 핵심 우려사항과 선행조건을 말해줘.')">💰 Popga 유료화 검토</div>
+        <div class="welcome-chip" onclick="fillPrompt('530억 매출 목표 달성을 위한 BU별 전략과 우선순위를 도출해줘.')">🎯 530억 목표 전략</div>
+      </div>
+    </div>`;
+  const input = document.getElementById('inputBox');
+  input.value = '';
+  input.style.height = 'auto';
+  attachedFiles = [];
+  attachedUrls = [];
+  renderFilePreviews();
+}
+ 
 // ── INIT ──
 function init() {
   renderAgentList();
@@ -791,7 +837,7 @@ function init() {
     setTimeout(() => document.getElementById('apiKeyInput').focus(), 200);
   }
 }
-
+ 
 function renderAgentList() {
   const container = document.getElementById('agentList');
   container.innerHTML = '';
@@ -810,7 +856,7 @@ function renderAgentList() {
     container.appendChild(div);
   });
 }
-
+ 
 function toggleAgent(key) {
   if (selectedAgents.has(key)) {
     if (selectedAgents.size > 1) selectedAgents.delete(key);
@@ -821,7 +867,7 @@ function toggleAgent(key) {
   updateTopbar();
   updateBadges();
 }
-
+ 
 function toggleAll() {
   if (selectedAgents.size === Object.keys(AGENTS).length) {
     selectedAgents = new Set([Object.keys(AGENTS)[0]]);
@@ -832,7 +878,7 @@ function toggleAll() {
   updateTopbar();
   updateBadges();
 }
-
+ 
 function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -845,13 +891,13 @@ function setMode(mode) {
     updateBadges();
   }
 }
-
+ 
 function setFormat(fmt) {
   currentFormat = fmt;
   document.querySelectorAll('.output-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`[data-fmt="${fmt}"]`).classList.add('active');
 }
-
+ 
 function updateTopbar() {
   const titles = {
     all: '전체 경영회의', select: '특정 에이전트 호출',
@@ -860,7 +906,7 @@ function updateTopbar() {
   document.getElementById('topbarTitle').textContent = titles[currentMode];
   document.getElementById('topbarMeta').textContent = `${selectedAgents.size}명의 에이전트 활성화`;
 }
-
+ 
 function updateBadges() {
   const container = document.getElementById('activeBadges');
   container.innerHTML = '';
@@ -873,7 +919,7 @@ function updateBadges() {
     container.appendChild(badge);
   });
 }
-
+ 
 // ── INPUT HANDLING ──
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -881,19 +927,19 @@ function handleKey(e) {
     sendMessage();
   }
 }
-
+ 
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
 }
-
+ 
 function fillPrompt(text) {
   const box = document.getElementById('inputBox');
   box.value = text;
   autoResize(box);
   box.focus();
 }
-
+ 
 // ── FILE HANDLING ──
 function handleFiles(e) {
   [...e.target.files].forEach(file => {
@@ -901,7 +947,7 @@ function handleFiles(e) {
     renderFilePreviews();
   });
 }
-
+ 
 function renderFilePreviews() {
   const container = document.getElementById('filePreview');
   container.innerHTML = '';
@@ -919,10 +965,10 @@ function renderFilePreviews() {
     container.appendChild(tag);
   });
 }
-
+ 
 function removeFile(i) { attachedFiles.splice(i, 1); renderFilePreviews(); }
 function removeUrl(i) { attachedUrls.splice(i, 1); renderFilePreviews(); }
-
+ 
 // ── URL MODAL ──
 function openUrlModal() { document.getElementById('urlModal').classList.add('open'); document.getElementById('urlInput').focus(); }
 function closeUrlModal() { document.getElementById('urlModal').classList.remove('open'); document.getElementById('urlInput').value = ''; }
@@ -930,7 +976,7 @@ function addUrl() {
   const url = document.getElementById('urlInput').value.trim();
   if (url) { attachedUrls.push(url); renderFilePreviews(); closeUrlModal(); }
 }
-
+ 
 // ── READ FILE AS BASE64 ──
 async function fileToBase64(file) {
   return new Promise((res, rej) => {
@@ -940,26 +986,26 @@ async function fileToBase64(file) {
     r.readAsDataURL(file);
   });
 }
-
+ 
 // ── MAIN SEND ──
 async function sendMessage() {
   const input = document.getElementById('inputBox');
   const text = input.value.trim();
   if (!text || isLoading) return;
-
+ 
   // Hide welcome
   const welcome = document.getElementById('welcomeScreen');
   if (welcome) welcome.remove();
-
+ 
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
   document.getElementById('sendBtn').style.display = 'none';
   document.getElementById('stopBtn').style.display = 'flex';
   abortController = new AbortController();
-
+ 
   // Add user message
   addUserMessage(text, attachedFiles.map(f => f.name), attachedUrls);
-
+ 
   // Clear input
   input.value = '';
   input.style.height = 'auto';
@@ -968,13 +1014,13 @@ async function sendMessage() {
   attachedFiles = [];
   attachedUrls = [];
   renderFilePreviews();
-
+ 
   // Show loading
   const loadingId = addLoading();
-
+ 
   try {
     const agents = [...selectedAgents];
-
+ 
     if (agents.length === 1) {
       await runSingleAgent(agents[0], text, files, urls, loadingId);
     } else if (currentMode === 'gonogo') {
@@ -986,17 +1032,17 @@ async function sendMessage() {
     removeLoading(loadingId);
     if (err.name !== 'AbortError') addErrorMessage(err.message);
   }
-
+ 
   isLoading = false;
   document.getElementById('sendBtn').disabled = false;
   document.getElementById('sendBtn').style.display = 'flex';
   document.getElementById('stopBtn').style.display = 'none';
   abortController = null;
 }
-
+ 
 // ── HELPERS ──
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-
+ 
 async function callClaudeWithRetry(systemPrompt, userContent, retries = 3) {
   for (let attempt = 0; attempt < retries; attempt++) {
     if (abortController && abortController.signal.aborted) throw new DOMException('Aborted', 'AbortError');
@@ -1016,7 +1062,7 @@ async function callClaudeWithRetry(systemPrompt, userContent, retries = 3) {
     }
   }
 }
-
+ 
 // ── API CALL ──
 async function callClaude(systemPrompt, userContent, history = []) {
   if (!API_KEY) {
@@ -1027,7 +1073,7 @@ async function callClaude(systemPrompt, userContent, history = []) {
     ...history,
     { role: 'user', content: userContent }
   ];
-
+ 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -1043,7 +1089,7 @@ async function callClaude(systemPrompt, userContent, history = []) {
       messages,
     })
   });
-
+ 
   if (!res.ok) {
     const err = await res.json();
     if (res.status === 401) {
@@ -1055,15 +1101,15 @@ async function callClaude(systemPrompt, userContent, history = []) {
     }
     throw new Error(err.error?.message || `API 오류 ${res.status}`);
   }
-
+ 
   const data = await res.json();
   return data.content.map(b => b.text || '').join('');
 }
-
+ 
 // ── BUILD USER CONTENT (with files/urls) ──
 async function buildUserContent(text, files, urls) {
   const content = [];
-
+ 
   // Add PDFs
   for (const file of files) {
     if (file.type === 'application/pdf') {
@@ -1071,62 +1117,62 @@ async function buildUserContent(text, files, urls) {
       content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } });
     }
   }
-
+ 
   // Add URL context
   let urlContext = '';
   if (urls.length > 0) {
     urlContext = `\n\n[참조 링크]\n${urls.map(u => `- ${u}`).join('\n')}\n위 링크들의 내용을 참고해서 분석해주세요.`;
   }
-
+ 
   const textContent = text + urlContext;
   content.push({ type: 'text', text: textContent });
-
+ 
   return content.length === 1 ? content[0].text : content;
 }
-
+ 
 // ── SINGLE AGENT ──
 async function runSingleAgent(agentKey, text, files, urls, loadingId) {
   const agent = AGENTS[agentKey];
   const persona = PERSONAS[agentKey];
-
+ 
   const systemPrompt = `${persona}
-
+ 
 ${COMPANY_CONTEXT}
-
+ 
 CEO(Jay)의 지시/질문에 대해 당신의 역할과 관점으로 깊이 있는 분석과 제언을 제공하세요.
 - 구체적이고 실행 가능한 내용 위주
 - 추상적 조언보다 "다음 주까지 해야 할 것"을 포함
 - 불편한 진실도 직언
 - 한국어로 응답`;
-
+ 
   const userContent = await buildUserContent(text, files, urls);
   const response = await callClaude(systemPrompt, userContent);
-
+ 
   removeLoading(loadingId);
   addAgentCard(agentKey, agent, response);
 }
-
+ 
 // ── MULTI AGENT ──
 async function runMultiAgent(agents, text, files, urls, loadingId, mode) {
   removeLoading(loadingId);
-
+ 
   const modeInstruction = {
     all: '당신의 전문 관점에서 핵심 우려사항, 분석, 구체적 권고를 제시하세요.',
     select: '당신의 전문 영역에 집중해서 분석과 권고를 제시하세요.',
     risk: '리스크 관점에서 분석하세요. 각 리스크를 High/Mid/Low로 분류하세요.',
     priority: '우선순위 관점에서 분석하고, 즉시 실행/단기/중기로 분류해서 제안하세요.',
   }[mode] || '당신의 전문 관점에서 분석과 권고를 제시하세요.';
-
+ 
   const formatInstruction = {
     full: '상세하게 분석해주세요. (400~600자 목표)',
     summary: '핵심만 간결하게 요약해주세요. (200~300자)',
     action: '액션 아이템만 번호 목록으로 제시하세요. (3~5개)',
   }[currentFormat];
-
+ 
   const allResponses = {};
   const userContent = await buildUserContent(text, files, urls);
   const userText = typeof userContent === 'string' ? userContent : text;
-
+ 
   // Run agents sequentially with delay to avoid overload
   for (let i = 0; i < agents.length; i++) {
     if (abortController && abortController.signal.aborted) break;
@@ -1135,13 +1181,13 @@ async function runMultiAgent(agents, text, files, urls, loadingId, mode) {
     const loadId = addLoading(`${agentKey} 분석 중...`);
     try {
       const systemPrompt = `${PERSONAS[agentKey]}
-
+ 
 ${COMPANY_CONTEXT}
-
+ 
 ${modeInstruction}
 ${formatInstruction}
 한국어로 응답하세요. 당신의 역할/직책을 서두에 밝히지 말고 바로 분석 내용을 시작하세요.`;
-
+ 
       const resp = await callClaudeWithRetry(systemPrompt, userContent);
       allResponses[agentKey] = resp;
       removeLoading(loadId);
@@ -1152,7 +1198,7 @@ ${formatInstruction}
       addAgentCard(agentKey, AGENTS[agentKey], `❌ 오류: ${e.message}`);
     }
   }
-
+ 
   // Generate summary
   if (agents.length >= 2 && currentFormat !== 'action') {
     const summaryLoadId = addLoading('핵심 정리 중...');
@@ -1160,20 +1206,20 @@ ${formatInstruction}
       const agentResponsesText = agents.map(k => `[${k}]: ${allResponses[k] || ''}`).join('\n\n');
       const summaryPrompt = `당신은 스위트스팟 CEO의 어시스턴트입니다. 
 다음 C-레벨 에이전트들의 분석을 종합해서 CEO를 위한 핵심 정리를 작성하세요.
-
+ 
 ${COMPANY_CONTEXT}
-
+ 
 에이전트 응답:
 ${agentResponsesText}
-
+ 
 다음 형식으로 정리하세요:
 1. **주요 합의점** (에이전트들이 동의하는 사항)
 2. **주요 이견** (에이전트들 간 관점 충돌)  
 3. **CEO 의사결정을 위한 핵심 질문** (CEO가 결정해야 할 사항 2~3개)
 4. **즉시 실행 권고** (이번 주 안에 해야 할 것)
-
+ 
 한국어로, 간결하고 명확하게.`;
-
+ 
       const summary = await callClaude(summaryPrompt, `CEO 아젠다: ${userText}`);
       removeLoading(summaryLoadId);
       addSummaryCard(summary);
@@ -1182,13 +1228,13 @@ ${agentResponsesText}
     }
   }
 }
-
+ 
 // ── GO/NO-GO ──
 async function runGoNoGo(agents, text, files, urls, loadingId) {
   removeLoading(loadingId);
   const userContent = await buildUserContent(text, files, urls);
   const votes = {};
-
+ 
   for (let i = 0; i < agents.length; i++) {
     if (abortController && abortController.signal.aborted) break;
     const agentKey = agents[i];
@@ -1196,15 +1242,15 @@ async function runGoNoGo(agents, text, files, urls, loadingId) {
     const loadId = addLoading(`${agentKey} 검토 중...`);
     try {
       const systemPrompt = `${PERSONAS[agentKey]}
-
+ 
 ${COMPANY_CONTEXT}
-
+ 
 CEO가 의사결정을 요청했습니다. 당신의 관점에서 Go/No-Go/조건부Go 중 하나를 결정하고, 핵심 근거를 2~3문장으로 제시하세요.
 응답 형식 (반드시 이 형식으로):
 VERDICT: [GO 또는 NOGO 또는 CONDITIONAL]
 REASON: [핵심 근거 2~3문장]
 한국어로 응답.`;
-
+ 
       const resp = await callClaudeWithRetry(systemPrompt, userContent);
       votes[agentKey] = parseVerdict(resp);
       removeLoading(loadId);
@@ -1214,10 +1260,10 @@ REASON: [핵심 근거 2~3문장]
       votes[agentKey] = { verdict: 'CONDITIONAL', reason: `오류: ${e.message}` };
     }
   }
-
+ 
   addGoNoGoCard(agents, votes, text);
 }
-
+ 
 function parseVerdict(text) {
   const vMatch = text.match(/VERDICT:\s*(GO|NOGO|CONDITIONAL)/i);
   const rMatch = text.match(/REASON:\s*([\s\S]+)/i);
@@ -1226,7 +1272,7 @@ function parseVerdict(text) {
     reason: rMatch ? rMatch[1].trim() : text.slice(0, 200)
   };
 }
-
+ 
 // ── UI HELPERS ──
 function addUserMessage(text, fileNames, urls) {
   const chat = document.getElementById('chatArea');
@@ -1239,7 +1285,7 @@ function addUserMessage(text, fileNames, urls) {
   chat.appendChild(div);
   scrollBottom();
 }
-
+ 
 function addAgentCard(key, agent, text) {
   const chat = document.getElementById('chatArea');
   const wrapper = document.createElement('div');
@@ -1262,7 +1308,7 @@ function addAgentCard(key, agent, text) {
   chat.appendChild(wrapper);
   scrollBottom();
 }
-
+ 
 function addSummaryCard(text) {
   const chat = document.getElementById('chatArea');
   const div = document.createElement('div');
@@ -1274,7 +1320,7 @@ function addSummaryCard(text) {
   chat.appendChild(div);
   scrollBottom();
 }
-
+ 
 function addGoNoGoCard(agents, votes, agenda) {
   const chat = document.getElementById('chatArea');
   const div = document.createElement('div');
@@ -1301,7 +1347,7 @@ function addGoNoGoCard(agents, votes, agenda) {
   const total = agents.length;
   const finalVerdict = goCount > total/2 ? '✅ GO 권고' :
                        nogoCount > total/2 ? '❌ NO-GO 권고' : '⚠️ 조건부 Go 권고';
-
+ 
   div.innerHTML = `
     <div class="summary-title">⚡ Go/No-Go 의사결정 매트릭스</div>
     <table class="decision-table">
@@ -1317,7 +1363,7 @@ function addGoNoGoCard(agents, votes, agenda) {
   chat.appendChild(div);
   scrollBottom();
 }
-
+ 
 let loadingCounter = 0;
 function addLoading(msg = '분석 중...') {
   const id = 'loading-' + (++loadingCounter);
@@ -1337,12 +1383,12 @@ function addLoading(msg = '분석 중...') {
   scrollBottom();
   return id;
 }
-
+ 
 function removeLoading(id) {
   const el = document.getElementById(id);
   if (el) el.remove();
 }
-
+ 
 function addErrorMessage(msg) {
   const chat = document.getElementById('chatArea');
   const div = document.createElement('div');
@@ -1351,12 +1397,12 @@ function addErrorMessage(msg) {
   chat.appendChild(div);
   scrollBottom();
 }
-
+ 
 function scrollBottom() {
   const chat = document.getElementById('chatArea');
   setTimeout(() => chat.scrollTop = chat.scrollHeight, 50);
 }
-
+ 
 // ── MARKDOWN RENDERER ──
 function renderMarkdown(text) {
   return text
@@ -1378,14 +1424,15 @@ function renderMarkdown(text) {
     .replace(/\[Mid\]/gi, '<span class="risk-badge risk-mid">MID</span>')
     .replace(/\[Low\]/gi, '<span class="risk-badge risk-low">LOW</span>');
 }
-
+ 
 function escapeHtml(text) {
   return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
+ 
 // ── START ──
 init();
 </script>
-
+ 
 </body>
 </html>
+ 
