@@ -58,6 +58,12 @@
     overflow: hidden;
   }
 
+  .sidebar-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   .sidebar-header {
     padding: 24px 20px 16px;
     border-bottom: 1px solid var(--border);
@@ -406,8 +412,23 @@
   .risk-mid { background: rgba(240,149,78,0.2); color: var(--orange); }
   .risk-low { background: rgba(61,214,140,0.2); color: var(--green); }
 
-  /* file input hidden */
-  #fileInput { display: none; }
+  .btn-stop {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    animation: pulse-red 1.2s ease-in-out infinite;
+  }
+  .btn-stop:hover { background: #d04040; }
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(240,94,94,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(240,94,94,0); }
+  }
 
   /* ── API KEY SETUP SCREEN ── */
   .setup-overlay {
@@ -529,15 +550,16 @@
       <div class="logo">Board Room<span>Sweetspot AI</span></div>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label">회의 모드</div>
-      <div class="mode-btns">
-        <button class="mode-btn active" data-mode="all" onclick="setMode('all')">
-          <span class="icon">🏛️</span> 전체 경영회의
-        </button>
-        <button class="mode-btn" data-mode="select" onclick="setMode('select')">
-          <span class="icon">🎯</span> 특정 에이전트 호출
-        </button>
+    <div class="sidebar-scroll">
+      <div class="sidebar-section">
+        <div class="sidebar-label">회의 모드</div>
+        <div class="mode-btns">
+          <button class="mode-btn active" data-mode="all" onclick="setMode('all')">
+            <span class="icon">🏛️</span> 전체 경영회의
+          </button>
+          <button class="mode-btn" data-mode="select" onclick="setMode('select')">
+            <span class="icon">🎯</span> 특정 에이전트 호출
+          </button>
         <button class="mode-btn" data-mode="gonogo" onclick="setMode('gonogo')">
           <span class="icon">⚡</span> Go/No-Go 의사결정
         </button>
@@ -555,6 +577,8 @@
       <button class="select-all-btn" onclick="toggleAll()">⚡ 전체 선택 / 해제</button>
       <div class="agent-list" id="agentList"></div>
     </div>
+
+    </div><!-- /sidebar-scroll -->
 
     <div class="sidebar-bottom">
       <div style="font-size:11px;color:var(--text3);line-height:1.6;">
@@ -609,6 +633,7 @@
         <div class="input-actions">
           <button class="btn-icon" onclick="document.getElementById('fileInput').click()" title="PDF 첨부">📎</button>
           <button class="btn-icon" onclick="openUrlModal()" title="Google Drive / URL">🔗</button>
+          <button class="btn-stop" id="stopBtn" onclick="stopAll()" title="중단" style="display:none">■</button>
           <button class="btn-send" id="sendBtn" onclick="sendMessage()" title="전송">▶</button>
         </div>
       </div>
@@ -733,6 +758,27 @@ let attachedFiles = [];
 let attachedUrls = [];
 let isLoading = false;
 let conversationHistory = [];
+let abortController = null;
+
+function stopAll() {
+  if (abortController) {
+    abortController.abort();
+    abortController = null;
+  }
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('sendBtn').style.display = 'flex';
+  document.getElementById('stopBtn').style.display = 'none';
+  // Remove all loading indicators
+  document.querySelectorAll('.loading-card').forEach(el => el.remove());
+  // Add stopped notice
+  const chat = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.style.cssText = 'text-align:center;padding:10px;font-size:12px;color:var(--text3);';
+  div.textContent = '⏹ 분석이 중단되었습니다.';
+  chat.appendChild(div);
+  scrollBottom();
+}
 
 // ── INIT ──
 function init() {
@@ -907,6 +953,9 @@ async function sendMessage() {
 
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
+  document.getElementById('sendBtn').style.display = 'none';
+  document.getElementById('stopBtn').style.display = 'flex';
+  abortController = new AbortController();
 
   // Add user message
   addUserMessage(text, attachedFiles.map(f => f.name), attachedUrls);
@@ -935,11 +984,14 @@ async function sendMessage() {
     }
   } catch(err) {
     removeLoading(loadingId);
-    addErrorMessage(err.message);
+    if (err.name !== 'AbortError') addErrorMessage(err.message);
   }
 
   isLoading = false;
   document.getElementById('sendBtn').disabled = false;
+  document.getElementById('sendBtn').style.display = 'flex';
+  document.getElementById('stopBtn').style.display = 'none';
+  abortController = null;
 }
 
 // ── API CALL ──
