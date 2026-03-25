@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweetspot AI Board Room</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #18181f;
+    --bg4: #1e1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #5a5a72;
+    --accent: #7c6af5;
+    --accent2: #a594f9;
+    --gold: #d4a853;
+    --gold2: #f0c96a;
+    --green: #3dd68c;
+    --red: #f05e5e;
+    --orange: #f0954e;
+    
+    --cfo: #4e9af0;
+    --chro: #f07c4e;
+    --cmo: #e84f8c;
+    --cto: #3dd68c;
+    --coo: #a594f9;
+    --cxo: #f0d44e;
+    --cso: #f05e5e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--gold2);
+    letter-spacing: -0.3px;
+    line-height: 1;
+  }
+  .logo span { color: var(--text2); font-style: italic; font-size: 13px; display: block; margin-top: 2px; font-family: 'Noto Sans KR'; font-weight: 300; letter-spacing: 0; }
+
+  .sidebar-section { padding: 16px 16px 8px; }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+
+  /* ── MODE SELECTOR ── */
+  .mode-btns { display: flex; flex-direction: column; gap: 4px; }
+  .mode-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'Noto Sans KR';
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+  }
+  .mode-btn:hover { background: var(--bg3); color: var(--text); }
+  .mode-btn.active { background: rgba(124,106,245,0.15); color: var(--accent2); border: 1px solid rgba(124,106,245,0.25); }
+  .mode-btn .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* ── AGENT PILLS ── */
+  .agent-list { display: flex; flex-direction: column; gap: 3px; }
+  .agent-pill {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .agent-pill:hover { background: var(--bg3); }
+  .agent-pill.selected { border-color: rgba(255,255,255,0.15); background: var(--bg3); }
+  .agent-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .agent-name { font-size: 12px; font-weight: 500; flex: 1; }
+  .agent-role { font-size: 10px; color: var(--text3); }
+  .agent-check { font-size: 12px; color: var(--accent2); opacity: 0; transition: opacity 0.15s; }
+  .agent-pill.selected .agent-check { opacity: 1; }
+
+  .select-all-btn {
+    width: 100%;
+    padding: 7px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text2);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Noto Sans KR';
+    margin-bottom: 8px;
+  }
+  .select-all-btn:hover { background: var(--bg4); color: var(--text); }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── MAIN AREA ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── HEADER BAR ── */
+  .topbar {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .topbar-meta { font-size: 12px; color: var(--text3); }
+
+  .active-agents { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .agent-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+
+  /* ── CHAT AREA ── */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Welcome screen */
+  .welcome {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 16px;
+    padding: 40px;
+  }
+  .welcome-logo { font-family: 'DM Serif Display'; font-size: 40px; color: var(--gold2); margin-bottom: 8px; }
+  .welcome-sub { font-size: 14px; color: var(--text2); line-height: 1.7; max-width: 480px; }
+  .welcome-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
+  .welcome-chip {
+    padding: 7px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .welcome-chip:hover { background: var(--bg4); color: var(--text); border-color: var(--accent); }
+
+  /* Messages */
+  .msg-user {
+    display: flex; justify-content: flex-end;
+  }
+  .msg-user .bubble {
+    background: var(--accent);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 16px 16px 4px 16px;
+    max-width: 70%;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .msg-system {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* Agent response card */
+  .agent-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .agent-card-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .agent-avatar {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .agent-card-name { font-size: 14px; font-weight: 700; }
+  .agent-card-role { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  
+  .agent-card-body {
+    padding: 18px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  /* Summary card */
+  .summary-card {
+    background: linear-gradient(135deg, rgba(124,106,245,0.1), rgba(212,168,83,0.08));
+    border: 1px solid rgba(124,106,245,0.25);
+    border-radius: 14px;
+    padding: 20px;
+    animation: fadeUp 0.3s ease;
+  }
+  .summary-title {
+    font-size: 13px; font-weight: 700; color: var(--gold2);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .summary-section { margin-bottom: 14px; }
+  .summary-section-label { font-size: 11px; font-weight: 700; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+  .summary-section p { font-size: 13px; line-height: 1.7; color: var(--text2); }
+
+  /* Go/No-go table */
+  .decision-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .decision-table th {
+    text-align: left; padding: 8px 12px;
+    background: var(--bg3);
+    color: var(--text3); font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .decision-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .decision-table tr:last-child td { border-bottom: none; }
+  .verdict { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .verdict.go { background: rgba(61,214,140,0.15); color: var(--green); }
+  .verdict.nogo { background: rgba(240,94,94,0.15); color: var(--red); }
+  .verdict.cond { background: rgba(240,149,78,0.15); color: var(--orange); }
+
+  /* Loading */
+  .loading-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex; align-items: center; gap: 14px;
+    animation: fadeUp 0.2s ease;
+  }
+  .loading-dots { display: flex; gap: 5px; }
+  .loading-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+  .loading-text { font-size: 13px; color: var(--text3); }
+
+  /* ── INPUT AREA ── */
+  .input-area {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  
+  .file-preview { 
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
+  }
+  .file-tag {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--text2);
+  }
+  .file-tag button { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
+
+  .input-row {
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+  .input-box {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Noto Sans KR';
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    min-height: 52px;
+    max-height: 160px;
+    line-height: 1.6;
+    transition: border-color 0.15s;
+  }
+  .input-box:focus { border-color: var(--accent); }
+  .input-box::placeholder { color: var(--text3); }
+
+  .input-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .btn-icon:hover { background: var(--bg4); color: var(--text); }
+
+  .btn-send {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .btn-send:hover { background: var(--accent2); }
+  .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .input-hint { font-size: 11px; color: var(--text3); margin-top: 8px; }
+
+  /* ── OUTPUT OPTIONS ── */
+  .output-opts {
+    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .output-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-size: 11px;
+    font-family: 'Noto Sans KR';
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .output-btn:hover { background: var(--bg3); color: var(--text); }
+  .output-btn.active { background: rgba(124,106,245,0.15); color: var(--accent2); border-color: rgba(124,106,245,0.35); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+  /* ── MARKDOWN-LIKE RENDERING ── */
+  .agent-card-body strong { color: var(--gold2); font-weight: 700; }
+  .agent-card-body em { color: var(--accent2); font-style: italic; }
+  
+  /* Inline formatted blocks */
+  .risk-badge { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+  .risk-high { background: rgba(240,94,94,0.2); color: var(--red); }
+  .risk-mid { background: rgba(240,149,78,0.2); color: var(--orange); }
+  .risk-low { background: rgba(61,214,140,0.2); color: var(--green); }
+
+  /* file input hidden */
+  #fileInput { display: none; }
+
+  /* ── API KEY SETUP SCREEN ── */
+  .setup-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  .setup-overlay.open { display: flex; }
+  .setup-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 40px;
+    width: 480px; max-width: 92vw;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  }
+  .setup-logo { font-family: 'DM Serif Display'; font-size: 26px; color: var(--gold2); margin-bottom: 6px; }
+  .setup-sub { font-size: 13px; color: var(--text3); margin-bottom: 30px; line-height: 1.6; }
+  .setup-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; }
+  .setup-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+    letter-spacing: 0.5px;
+    transition: border-color 0.15s;
+    margin-bottom: 10px;
+  }
+  .setup-input:focus { border-color: var(--accent); }
+  .setup-hint {
+    font-size: 11px; color: var(--text3); line-height: 1.7; margin-bottom: 24px;
+  }
+  .setup-hint a { color: var(--accent2); text-decoration: none; }
+  .setup-hint a:hover { text-decoration: underline; }
+  .btn-setup {
+    width: 100%; padding: 13px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 700;
+    font-family: 'Noto Sans KR';
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-setup:hover { background: var(--accent2); }
+  .setup-error { font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
+
+  /* API key indicator in topbar */
+  .key-indicator {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    background: rgba(61,214,140,0.1);
+    border: 1px solid rgba(61,214,140,0.25);
+    border-radius: 20px;
+    font-size: 11px; color: var(--green);
+    cursor: pointer;
+  }
+  .key-indicator:hover { background: rgba(61,214,140,0.18); }
+  .key-indicator.no-key {
+    background: rgba(240,94,94,0.1);
+    border-color: rgba(240,94,94,0.25);
+    color: var(--red);
+  }
+
+  /* URL input modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    z-index: 100; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; padding: 28px; width: 440px; max-width: 90vw;
+  }
+  .modal h3 { font-size: 16px; margin-bottom: 16px; color: var(--text); }
+  .modal input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 10px 14px; color: var(--text);
+    font-size: 14px; outline: none; font-family: 'Noto Sans KR';
+    margin-bottom: 14px;
+  }
+  .modal input:focus { border-color: var(--accent); }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-modal {
+    padding: 9px 20px; border-radius: 8px; font-size: 13px;
+    font-family: 'Noto Sans KR'; cursor: pointer; border: none; transition: all 0.15s;
+  }
+  .btn-cancel { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+  .btn-cancel:hover { color: var(--text); }
+  .btn-confirm { background: var(--accent); color: #fff; }
+  .btn-confirm:hover { background: var(--accent2); }
+
+  /* Formatted markdown output */
+  .formatted-content h3 { color: var(--gold2); font-size: 15px; margin: 16px 0 8px; }
+  .formatted-content h4 { color: var(--accent2); font-size: 13px; margin: 12px 0 6px; }
+  .formatted-content ul { padding-left: 20px; }
+  .formatted-content li { margin-bottom: 4px; color: var(--text2); font-size: 13px; line-height: 1.6; }
+  .formatted-content p { margin-bottom: 10px; }
+  .formatted-content strong { color: var(--gold2); }
+  .formatted-content hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .formatted-content table { width:100%; border-collapse:collapse; margin: 12px 0; font-size:13px; }
+  .formatted-content th { background:var(--bg3); padding:8px 12px; text-align:left; color:var(--text3); font-size:11px; text-transform:uppercase; letter-spacing:0.8px; }
+  .formatted-content td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text2); vertical-align:top; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">Board Room<span>Sweetspot AI</span></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">회의 모드</div>
+      <div class="mode-btns">
+        <button class="mode-btn active" data-mode="all" onclick="setMode('all')">
+          <span class="icon">🏛️</span> 전체 경영회의
+        </button>
+        <button class="mode-btn" data-mode="select" onclick="setMode('select')">
+          <span class="icon">🎯</span> 특정 에이전트 호출
+        </button>
+        <button class="mode-btn" data-mode="gonogo" onclick="setMode('gonogo')">
+          <span class="icon">⚡</span> Go/No-Go 의사결정
+        </button>
+        <button class="mode-btn" data-mode="risk" onclick="setMode('risk')">
+          <span class="icon">🛡️</span> 리스크 검토
+        </button>
+        <button class="mode-btn" data-mode="priority" onclick="setMode('priority')">
+          <span class="icon">📊</span> 우선순위 도출
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">에이전트 선택</div>
+      <button class="select-all-btn" onclick="toggleAll()">⚡ 전체 선택 / 해제</button>
+      <div class="agent-list" id="agentList"></div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div style="font-size:11px;color:var(--text3);line-height:1.6;">
+        💡 <strong style="color:var(--text2)">팁</strong>: 에이전트를 선택하고 아젠다를 입력하세요. PDF 파일 또는 Google Drive URL 첨부 가능.
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbarTitle">전체 경영회의</div>
+        <div class="topbar-meta" id="topbarMeta">7명의 C-레벨 에이전트가 대기 중</div>
+      </div>
+      <div class="active-agents" id="activeBadges"></div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-area" id="chatArea">
+      <div class="welcome" id="welcomeScreen">
+        <div class="welcome-logo">🏛️</div>
+        <div style="font-family:'DM Serif Display';font-size:28px;color:var(--text);">AI 집단지성 경영회의</div>
+        <div class="welcome-sub">CEO의 아젠다를 입력하면 선택된 C-레벨 에이전트들이 각자의 전문 관점에서 분석하고, 집단지성으로 최적의 의사결정을 지원합니다.</div>
+        <div class="welcome-chips">
+          <div class="welcome-chip" onclick="fillPrompt('Popga 앱 MAU가 지난 분기 대비 15% 하락했다. 원인 진단과 대응 방향을 논의해줘.')">📉 MAU 하락 원인 분석</div>
+          <div class="welcome-chip" onclick="fillPrompt('2026년 상반기 핵심 채용 포지션과 우선순위를 논의해줘.')">👥 채용 우선순위</div>
+          <div class="welcome-chip" onclick="fillPrompt('Stage X 추가 공간 오픈 투자 여부를 Go/No-Go로 결정해줘.')">🏢 Stage X 확장 결정</div>
+          <div class="welcome-chip" onclick="fillPrompt('Popga 앱 유료화를 2분기 내 추진하려 한다. 각자 핵심 우려사항과 선행조건을 말해줘.')">💰 Popga 유료화 검토</div>
+          <div class="welcome-chip" onclick="fillPrompt('530억 매출 목표 달성을 위한 BU별 전략과 우선순위를 도출해줘.')">🎯 530억 목표 전략</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output options -->
+    <div class="input-area">
+      <div class="output-opts" id="outputOpts">
+        <span style="font-size:11px;color:var(--text3);align-self:center;">응답 형식:</span>
+        <button class="output-btn active" data-fmt="full" onclick="setFormat('full')">전문 보기</button>
+        <button class="output-btn" data-fmt="summary" onclick="setFormat('summary')">요약 중심</button>
+        <button class="output-btn" data-fmt="action" onclick="setFormat('action')">액션 아이템만</button>
+      </div>
+
+      <div class="file-preview" id="filePreview"></div>
+
+      <div class="input-row">
+        <textarea class="input-box" id="inputBox" rows="2"
+          placeholder="아젠다를 입력하세요... (Shift+Enter로 줄바꿈, Enter로 전송)"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"></textarea>
+        <div class="input-actions">
+          <button class="btn-icon" onclick="document.getElementById('fileInput').click()" title="PDF 첨부">📎</button>
+          <button class="btn-icon" onclick="openUrlModal()" title="Google Drive / URL">🔗</button>
+          <button class="btn-send" id="sendBtn" onclick="sendMessage()" title="전송">▶</button>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf,.txt,.md" multiple onchange="handleFiles(event)">
+      <div class="input-hint">Enter 전송 · Shift+Enter 줄바꿈 · PDF 및 Google Drive 링크 지원</div>
+    </div>
+  </main>
+</div>
+
+<!-- API Key Setup Overlay -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-card">
+    <div class="setup-logo">🏛️ Board Room</div>
+    <div style="font-family:'DM Serif Display';font-size:20px;color:var(--text);margin-bottom:10px;">Sweetspot AI 경영회의 시스템</div>
+    <div class="setup-sub">시작하려면 Anthropic API 키를 입력하세요.<br>키는 이 브라우저에만 저장되며, 외부로 전송되지 않습니다.</div>
+
+    <div class="setup-label">Anthropic API Key</div>
+    <input class="setup-input" type="password" id="apiKeyInput"
+      placeholder="sk-ant-api03-..."
+      onkeydown="if(event.key==='Enter') saveApiKey()" />
+    <div class="setup-hint">
+      API 키가 없으신가요? <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>에서 발급 받을 수 있습니다.<br>
+      키는 브라우저 localStorage에 저장되어 다음 방문 시 자동으로 불러옵니다.
+    </div>
+    <button class="btn-setup" onclick="saveApiKey()">경영회의 시작하기 →</button>
+    <div class="setup-error" id="setupError"></div>
+  </div>
+</div>
+
+<!-- Key Change Button (injected into topbar via JS) -->
+
+<div class="modal-overlay" id="urlModal">
+  <div class="modal">
+    <h3>🔗 외부 링크 첨부</h3>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:16px;">Google Docs, Sheets, 또는 일반 웹 URL을 입력하세요. 에이전트들이 내용을 참고해 분석합니다.</p>
+    <input type="url" id="urlInput" placeholder="https://docs.google.com/..." />
+    <div class="modal-btns">
+      <button class="btn-modal btn-cancel" onclick="closeUrlModal()">취소</button>
+      <button class="btn-modal btn-confirm" onclick="addUrl()">첨부</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── API KEY ──
+let API_KEY = localStorage.getItem('ss_api_key') || '';
+
+function saveApiKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val.startsWith('sk-ant-')) {
+    const err = document.getElementById('setupError');
+    err.style.display = 'block';
+    err.textContent = '❌ 유효하지 않은 키 형식입니다. "sk-ant-"로 시작해야 합니다.';
+    return;
+  }
+  API_KEY = val;
+  localStorage.setItem('ss_api_key', val);
+  document.getElementById('setupOverlay').classList.remove('open');
+  updateKeyIndicator();
+}
+
+function openSetup() {
+  document.getElementById('apiKeyInput').value = API_KEY;
+  document.getElementById('setupError').style.display = 'none';
+  document.getElementById('setupOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('apiKeyInput').focus(), 100);
+}
+
+function updateKeyIndicator() {
+  let ind = document.getElementById('keyIndicator');
+  if (!ind) {
+    ind = document.createElement('div');
+    ind.id = 'keyIndicator';
+    ind.onclick = openSetup;
+    document.querySelector('.topbar').appendChild(ind);
+  }
+  if (API_KEY) {
+    ind.className = 'key-indicator';
+    ind.innerHTML = `🔑 API 키 설정됨`;
+  } else {
+    ind.className = 'key-indicator no-key';
+    ind.innerHTML = `⚠️ API 키 없음 — 클릭해서 설정`;
+  }
+}
+
+
+const AGENTS = {
+  CFO: { icon:'💼', color:'var(--cfo)', role:'최고재무책임자', emoji:'💼' },
+  CHRO: { icon:'👥', color:'var(--chro)', role:'최고인사책임자', emoji:'👥' },
+  CMO: { icon:'📣', color:'var(--cmo)', role:'최고마케팅책임자', emoji:'📣' },
+  CTO: { icon:'⚙️', color:'var(--cto)', role:'최고기술책임자', emoji:'⚙️' },
+  COO: { icon:'🏢', color:'var(--coo)', role:'최고운영책임자', emoji:'🏢' },
+  CXO: { icon:'🤖', color:'var(--cxo)', role:'최고AI혁신책임자', emoji:'🤖' },
+  CSO: { icon:'🎯', color:'var(--cso)', role:'최고전략책임자', emoji:'🎯' },
+};
+
+// ── AGENT PERSONAS (for API prompts) ──
+const PERSONAS = {
+  CFO: `당신은 스위트스팟의 CFO입니다. 페르소나: 김범석(쿠팡)의 공격적 자본 배분 + 워런 버핏의 현금흐름 원칙. 철학: "흑자는 목적지가 아니라 연료다." 공헌이익률, 현금흐름, 투자회수 시점을 항상 명시. 리스크를 열거하고 최악의 시나리오도 언급. 방어적이지 않고 성장 친화적. 한국 스타트업 VC 생태계 맥락 이해.`,
+  CHRO: `당신은 스위트스팟의 CHRO입니다. 페르소나: 패티 맥코드(넷플릭스)의 급진적 솔직함 + 김슬아(컬리)의 채용 철학. 철학: "좋은 문화는 복지가 아니라 기준이다." 실행할 사람이 있는지, 팀 사기, 채용 리드타임을 먼저 확인. 불편한 진실도 직언. 팝업 Agency 특성상 프리랜서/계약직 복잡성 이해.`,
+  CMO: `당신은 스위트스팟의 CMO입니다. 페르소나: AOMG 서브컬처 브랜딩 + 무신사 커뮤니티 플랫폼 철학 + 스티브 잡스 "제품이 곧 마케팅". 철학: "팝업은 경험이고, 경험은 콘텐츠가 되고, 콘텐츠는 커뮤니티가 된다." Popga를 팝업 문화의 허브로 포지셔닝. SNS 공유 가능성을 모든 기획의 1차 필터로. 단기 CAC보다 브랜드 자산.`,
+  CTO: `당신은 스위트스팟의 CTO입니다. 페르소나: 토스 초기의 빠른 실행력 + 당근마켓 오프라인 연결 플랫폼 감각 + 제프 딘의 확장성 사고. 철학: "완벽한 코드보다 내일 배포되는 코드가 낫다. 단, 6개월 후 다시 짜야 하는 코드는 안 된다." 빌드 vs 바이 결정, 기술 부채 트레이드오프를 현실적으로 제안. 과장 없이 현실적 가능성만.`,
+  COO: `당신은 스위트스팟의 COO입니다. 페르소나: 셰릴 샌드버그의 실행 프로세스화 능력 + 이랜드 오프라인 유통 운영 DNA + 야놀자 공간 플랫폼 운영 감각. 철학: "전략은 현장에서 죽거나 산다." BU(팝업Agency, Popga, StageX, ShopAtpisode)간 시너지와 충돌을 동시에 체크. 실행 플랜을 구체적 단계로. 현장 팀의 추가 업무량을 먼저 계산.`,
+  CXO: `당신은 스위트스팟의 CXO(최고AI혁신책임자)입니다. 페르소나: 앤드류 응의 AI 리터러시 전파 + 네이버 하이퍼클로바의 한국 비즈니스 AI 적용 + 오드컨셉의 오프라인-디지털 AI 실사용. 철학: "AI는 도구다. 망치를 쥐고 모든 것을 못으로 보면 안 된다." 데이터가 있는지 먼저 확인. AI 도입 ROI를 CFO 언어로 번역. 6개월 MVP 가능성 체크. AI 만능주의 거부.`,
+  CSO: `당신은 스위트스팟의 CSO입니다. 페르소나: 마이클 포터의 포지셔닝/트레이드오프 프레임 + 장병규의 스타트업 스케일업 철학 + 버질 아블로의 틈새→주류 브랜드 전략. 철학: "전략의 본질은 무엇을 하지 않을지 결정하는 것이다." 530억 매출 목표 포트폴리오 최적화. 팝업 시장 3~5년 구조 변화 시뮬레이션. 각 선택의 기회비용 명시. 거창한 비전보다 실행 경로.`,
+};
+
+const COMPANY_CONTEXT = `
+스위트스팟(Sweetspot) 회사 맥락:
+- 팝업스토어 전문 회사. 2024년 첫 흑자 달성, 강한 매출 성장세.
+- 사업 구조: 팝업 Agency(핵심), Popga 앱(팝업 정보 플랫폼), Stage X(오프라인 공간), Shop Atpisode(커머스)
+- 전략 방향: 팝업 시장 1위 → 콘텐츠/플랫폼 비즈니스로 확장
+- 2026 목표 매출: 약 530억원
+- CEO(Jay): 데이터 기반, 빠른 실행, 집단 의견 수렴 후 본인 최종 결정
+`;
+
+// ── STATE ──
+let currentMode = 'all';
+let selectedAgents = new Set(Object.keys(AGENTS));
+let currentFormat = 'full';
+let attachedFiles = [];
+let attachedUrls = [];
+let isLoading = false;
+let conversationHistory = [];
+
+// ── INIT ──
+function init() {
+  renderAgentList();
+  updateTopbar();
+  updateBadges();
+  updateKeyIndicator();
+  if (!API_KEY) {
+    document.getElementById('setupOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('apiKeyInput').focus(), 200);
+  }
+}
+
+function renderAgentList() {
+  const container = document.getElementById('agentList');
+  container.innerHTML = '';
+  Object.entries(AGENTS).forEach(([key, agent]) => {
+    const div = document.createElement('div');
+    div.className = 'agent-pill' + (selectedAgents.has(key) ? ' selected' : '');
+    div.onclick = () => toggleAgent(key);
+    div.innerHTML = `
+      <div class="agent-dot" style="background:${agent.color}"></div>
+      <div style="flex:1">
+        <div class="agent-name">${key}</div>
+        <div class="agent-role">${agent.role}</div>
+      </div>
+      <div class="agent-check">✓</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function toggleAgent(key) {
+  if (selectedAgents.has(key)) {
+    if (selectedAgents.size > 1) selectedAgents.delete(key);
+  } else {
+    selectedAgents.add(key);
+  }
+  renderAgentList();
+  updateTopbar();
+  updateBadges();
+}
+
+function toggleAll() {
+  if (selectedAgents.size === Object.keys(AGENTS).length) {
+    selectedAgents = new Set([Object.keys(AGENTS)[0]]);
+  } else {
+    selectedAgents = new Set(Object.keys(AGENTS));
+  }
+  renderAgentList();
+  updateTopbar();
+  updateBadges();
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+  updateTopbar();
+  // Auto-select all for 'all' mode
+  if (mode === 'all') {
+    selectedAgents = new Set(Object.keys(AGENTS));
+    renderAgentList();
+    updateBadges();
+  }
+}
+
+function setFormat(fmt) {
+  currentFormat = fmt;
+  document.querySelectorAll('.output-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-fmt="${fmt}"]`).classList.add('active');
+}
+
+function updateTopbar() {
+  const titles = {
+    all: '전체 경영회의', select: '특정 에이전트 호출',
+    gonogo: 'Go/No-Go 의사결정', risk: '리스크 검토', priority: '우선순위 도출'
+  };
+  document.getElementById('topbarTitle').textContent = titles[currentMode];
+  document.getElementById('topbarMeta').textContent = `${selectedAgents.size}명의 에이전트 활성화`;
+}
+
+function updateBadges() {
+  const container = document.getElementById('activeBadges');
+  container.innerHTML = '';
+  [...selectedAgents].forEach(key => {
+    const agent = AGENTS[key];
+    const badge = document.createElement('div');
+    badge.className = 'agent-badge';
+    badge.style.cssText = `color:${agent.color};border-color:${agent.color};background:${agent.color}20;`;
+    badge.textContent = key;
+    container.appendChild(badge);
+  });
+}
+
+// ── INPUT HANDLING ──
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+function fillPrompt(text) {
+  const box = document.getElementById('inputBox');
+  box.value = text;
+  autoResize(box);
+  box.focus();
+}
+
+// ── FILE HANDLING ──
+function handleFiles(e) {
+  [...e.target.files].forEach(file => {
+    attachedFiles.push(file);
+    renderFilePreviews();
+  });
+}
+
+function renderFilePreviews() {
+  const container = document.getElementById('filePreview');
+  container.innerHTML = '';
+  attachedFiles.forEach((f, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'file-tag';
+    tag.innerHTML = `📄 ${f.name} <button onclick="removeFile(${i})">×</button>`;
+    container.appendChild(tag);
+  });
+  attachedUrls.forEach((u, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'file-tag';
+    const short = u.replace(/^https?:\/\/(www\.)?/, '').slice(0, 40);
+    tag.innerHTML = `🔗 ${short} <button onclick="removeUrl(${i})">×</button>`;
+    container.appendChild(tag);
+  });
+}
+
+function removeFile(i) { attachedFiles.splice(i, 1); renderFilePreviews(); }
+function removeUrl(i) { attachedUrls.splice(i, 1); renderFilePreviews(); }
+
+// ── URL MODAL ──
+function openUrlModal() { document.getElementById('urlModal').classList.add('open'); document.getElementById('urlInput').focus(); }
+function closeUrlModal() { document.getElementById('urlModal').classList.remove('open'); document.getElementById('urlInput').value = ''; }
+function addUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (url) { attachedUrls.push(url); renderFilePreviews(); closeUrlModal(); }
+}
+
+// ── READ FILE AS BASE64 ──
+async function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ── MAIN SEND ──
+async function sendMessage() {
+  const input = document.getElementById('inputBox');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  // Hide welcome
+  const welcome = document.getElementById('welcomeScreen');
+  if (welcome) welcome.remove();
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  // Add user message
+  addUserMessage(text, attachedFiles.map(f => f.name), attachedUrls);
+
+  // Clear input
+  input.value = '';
+  input.style.height = 'auto';
+  const files = [...attachedFiles];
+  const urls = [...attachedUrls];
+  attachedFiles = [];
+  attachedUrls = [];
+  renderFilePreviews();
+
+  // Show loading
+  const loadingId = addLoading();
+
+  try {
+    const agents = [...selectedAgents];
+
+    if (agents.length === 1) {
+      await runSingleAgent(agents[0], text, files, urls, loadingId);
+    } else if (currentMode === 'gonogo') {
+      await runGoNoGo(agents, text, files, urls, loadingId);
+    } else {
+      await runMultiAgent(agents, text, files, urls, loadingId, currentMode);
+    }
+  } catch(err) {
+    removeLoading(loadingId);
+    addErrorMessage(err.message);
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+// ── API CALL ──
+async function callClaude(systemPrompt, userContent, history = []) {
+  if (!API_KEY) {
+    openSetup();
+    throw new Error('API 키가 설정되지 않았습니다. 상단의 API 키 설정 버튼을 클릭하세요.');
+  }
+  const messages = [
+    ...history,
+    { role: 'user', content: userContent }
+  ];
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1500,
+      system: systemPrompt,
+      messages,
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    if (res.status === 401) {
+      localStorage.removeItem('ss_api_key');
+      API_KEY = '';
+      updateKeyIndicator();
+      openSetup();
+      throw new Error('API 키가 유효하지 않습니다. 다시 입력해주세요.');
+    }
+    throw new Error(err.error?.message || `API 오류 ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.content.map(b => b.text || '').join('');
+}
+
+// ── BUILD USER CONTENT (with files/urls) ──
+async function buildUserContent(text, files, urls) {
+  const content = [];
+
+  // Add PDFs
+  for (const file of files) {
+    if (file.type === 'application/pdf') {
+      const b64 = await fileToBase64(file);
+      content.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } });
+    }
+  }
+
+  // Add URL context
+  let urlContext = '';
+  if (urls.length > 0) {
+    urlContext = `\n\n[참조 링크]\n${urls.map(u => `- ${u}`).join('\n')}\n위 링크들의 내용을 참고해서 분석해주세요.`;
+  }
+
+  const textContent = text + urlContext;
+  content.push({ type: 'text', text: textContent });
+
+  return content.length === 1 ? content[0].text : content;
+}
+
+// ── SINGLE AGENT ──
+async function runSingleAgent(agentKey, text, files, urls, loadingId) {
+  const agent = AGENTS[agentKey];
+  const persona = PERSONAS[agentKey];
+
+  const systemPrompt = `${persona}
+
+${COMPANY_CONTEXT}
+
+CEO(Jay)의 지시/질문에 대해 당신의 역할과 관점으로 깊이 있는 분석과 제언을 제공하세요.
+- 구체적이고 실행 가능한 내용 위주
+- 추상적 조언보다 "다음 주까지 해야 할 것"을 포함
+- 불편한 진실도 직언
+- 한국어로 응답`;
+
+  const userContent = await buildUserContent(text, files, urls);
+  const response = await callClaude(systemPrompt, userContent);
+
+  removeLoading(loadingId);
+  addAgentCard(agentKey, agent, response);
+}
+
+// ── MULTI AGENT ──
+async function runMultiAgent(agents, text, files, urls, loadingId, mode) {
+  removeLoading(loadingId);
+
+  const modeInstruction = {
+    all: '당신의 전문 관점에서 핵심 우려사항, 분석, 구체적 권고를 제시하세요.',
+    select: '당신의 전문 영역에 집중해서 분석과 권고를 제시하세요.',
+    risk: '리스크 관점에서 분석하세요. 각 리스크를 High/Mid/Low로 분류하세요.',
+    priority: '우선순위 관점에서 분석하고, 즉시 실행/단기/중기로 분류해서 제안하세요.',
+  }[mode] || '당신의 전문 관점에서 분석과 권고를 제시하세요.';
+
+  const formatInstruction = {
+    full: '상세하게 분석해주세요. (400~600자 목표)',
+    summary: '핵심만 간결하게 요약해주세요. (200~300자)',
+    action: '액션 아이템만 번호 목록으로 제시하세요. (3~5개)',
+  }[currentFormat];
+
+  const allResponses = {};
+  const userContent = await buildUserContent(text, files, urls);
+  const userText = typeof userContent === 'string' ? userContent : text;
+
+  // Run agents in parallel (or sequentially for API safety)
+  for (const agentKey of agents) {
+    const loadId = addLoading(`${agentKey} 분석 중...`);
+    try {
+      const systemPrompt = `${PERSONAS[agentKey]}
+
+${COMPANY_CONTEXT}
+
+${modeInstruction}
+${formatInstruction}
+한국어로 응답하세요. 당신의 역할/직책을 서두에 밝히지 말고 바로 분석 내용을 시작하세요.`;
+
+      const resp = await callClaude(systemPrompt, userContent);
+      allResponses[agentKey] = resp;
+      removeLoading(loadId);
+      addAgentCard(agentKey, AGENTS[agentKey], resp);
+    } catch(e) {
+      removeLoading(loadId);
+      addAgentCard(agentKey, AGENTS[agentKey], `❌ 오류: ${e.message}`);
+    }
+  }
+
+  // Generate summary
+  if (agents.length >= 2 && currentFormat !== 'action') {
+    const summaryLoadId = addLoading('핵심 정리 중...');
+    try {
+      const agentResponsesText = agents.map(k => `[${k}]: ${allResponses[k] || ''}`).join('\n\n');
+      const summaryPrompt = `당신은 스위트스팟 CEO의 어시스턴트입니다. 
+다음 C-레벨 에이전트들의 분석을 종합해서 CEO를 위한 핵심 정리를 작성하세요.
+
+${COMPANY_CONTEXT}
+
+에이전트 응답:
+${agentResponsesText}
+
+다음 형식으로 정리하세요:
+1. **주요 합의점** (에이전트들이 동의하는 사항)
+2. **주요 이견** (에이전트들 간 관점 충돌)  
+3. **CEO 의사결정을 위한 핵심 질문** (CEO가 결정해야 할 사항 2~3개)
+4. **즉시 실행 권고** (이번 주 안에 해야 할 것)
+
+한국어로, 간결하고 명확하게.`;
+
+      const summary = await callClaude(summaryPrompt, `CEO 아젠다: ${userText}`);
+      removeLoading(summaryLoadId);
+      addSummaryCard(summary);
+    } catch(e) {
+      removeLoading(summaryLoadId);
+    }
+  }
+}
+
+// ── GO/NO-GO ──
+async function runGoNoGo(agents, text, files, urls, loadingId) {
+  removeLoading(loadingId);
+  const userContent = await buildUserContent(text, files, urls);
+  const votes = {};
+
+  for (const agentKey of agents) {
+    const loadId = addLoading(`${agentKey} 검토 중...`);
+    try {
+      const systemPrompt = `${PERSONAS[agentKey]}
+
+${COMPANY_CONTEXT}
+
+CEO가 의사결정을 요청했습니다. 당신의 관점에서 Go/No-Go/조건부Go 중 하나를 결정하고, 핵심 근거를 2~3문장으로 제시하세요.
+응답 형식 (반드시 이 형식으로):
+VERDICT: [GO 또는 NOGO 또는 CONDITIONAL]
+REASON: [핵심 근거 2~3문장]
+한국어로 응답.`;
+
+      const resp = await callClaude(systemPrompt, userContent);
+      votes[agentKey] = parseVerdict(resp);
+      removeLoading(loadId);
+    } catch(e) {
+      removeLoading(loadId);
+      votes[agentKey] = { verdict: 'CONDITIONAL', reason: `오류: ${e.message}` };
+    }
+  }
+
+  addGoNoGoCard(agents, votes, text);
+}
+
+function parseVerdict(text) {
+  const vMatch = text.match(/VERDICT:\s*(GO|NOGO|CONDITIONAL)/i);
+  const rMatch = text.match(/REASON:\s*([\s\S]+)/i);
+  return {
+    verdict: vMatch ? vMatch[1].toUpperCase() : 'CONDITIONAL',
+    reason: rMatch ? rMatch[1].trim() : text.slice(0, 200)
+  };
+}
+
+// ── UI HELPERS ──
+function addUserMessage(text, fileNames, urls) {
+  const chat = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'msg-user';
+  let content = text;
+  if (fileNames.length) content += `\n📎 ${fileNames.join(', ')}`;
+  if (urls.length) content += `\n🔗 ${urls.join('\n🔗 ')}`;
+  div.innerHTML = `<div class="bubble">${escapeHtml(content)}</div>`;
+  chat.appendChild(div);
+  scrollBottom();
+}
+
+function addAgentCard(key, agent, text) {
+  const chat = document.getElementById('chatArea');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg-system';
+  
+  const card = document.createElement('div');
+  card.className = 'agent-card';
+  card.innerHTML = `
+    <div class="agent-card-header">
+      <div class="agent-avatar" style="background:${agent.color}20;border:1px solid ${agent.color}40">
+        ${agent.emoji}
+      </div>
+      <div>
+        <div class="agent-card-name" style="color:${agent.color}">${key} — ${agent.role}</div>
+      </div>
+    </div>
+    <div class="agent-card-body formatted-content">${renderMarkdown(text)}</div>
+  `;
+  wrapper.appendChild(card);
+  chat.appendChild(wrapper);
+  scrollBottom();
+}
+
+function addSummaryCard(text) {
+  const chat = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'summary-card';
+  div.innerHTML = `
+    <div class="summary-title">🔑 CEO를 위한 핵심 정리</div>
+    <div class="formatted-content">${renderMarkdown(text)}</div>
+  `;
+  chat.appendChild(div);
+  scrollBottom();
+}
+
+function addGoNoGoCard(agents, votes, agenda) {
+  const chat = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'summary-card';
+  
+  let goCount = 0, nogoCount = 0, condCount = 0;
+  let rows = '';
+  agents.forEach(key => {
+    const v = votes[key];
+    const agent = AGENTS[key];
+    const verd = v.verdict === 'GO' ? '<span class="verdict go">✅ GO</span>' :
+                 v.verdict === 'NOGO' ? '<span class="verdict nogo">❌ NO-GO</span>' :
+                 '<span class="verdict cond">⚠️ 조건부</span>';
+    if (v.verdict === 'GO') goCount++;
+    else if (v.verdict === 'NOGO') nogoCount++;
+    else condCount++;
+    rows += `<tr>
+      <td><strong style="color:${agent.color}">${key}</strong></td>
+      <td>${verd}</td>
+      <td style="font-size:12px;color:var(--text2)">${escapeHtml(v.reason)}</td>
+    </tr>`;
+  });
+  
+  const total = agents.length;
+  const finalVerdict = goCount > total/2 ? '✅ GO 권고' :
+                       nogoCount > total/2 ? '❌ NO-GO 권고' : '⚠️ 조건부 Go 권고';
+
+  div.innerHTML = `
+    <div class="summary-title">⚡ Go/No-Go 의사결정 매트릭스</div>
+    <table class="decision-table">
+      <thead><tr><th>에이전트</th><th>권고</th><th>핵심 근거</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:16px;padding:14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border2)">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">종합 권고</div>
+      <div style="font-size:18px;font-weight:700;color:var(--gold2)">${finalVerdict}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px;">GO ${goCount} · 조건부 ${condCount} · NO-GO ${nogoCount}</div>
+    </div>
+  `;
+  chat.appendChild(div);
+  scrollBottom();
+}
+
+let loadingCounter = 0;
+function addLoading(msg = '분석 중...') {
+  const id = 'loading-' + (++loadingCounter);
+  const chat = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'loading-card';
+  div.id = id;
+  div.innerHTML = `
+    <div class="loading-dots">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+    <div class="loading-text">${escapeHtml(msg)}</div>
+  `;
+  chat.appendChild(div);
+  scrollBottom();
+  return id;
+}
+
+function removeLoading(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function addErrorMessage(msg) {
+  const chat = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.style.cssText = 'background:rgba(240,94,94,0.1);border:1px solid rgba(240,94,94,0.3);border-radius:12px;padding:16px;font-size:13px;color:var(--red);';
+  div.textContent = '❌ 오류: ' + msg;
+  chat.appendChild(div);
+  scrollBottom();
+}
+
+function scrollBottom() {
+  const chat = document.getElementById('chatArea');
+  setTimeout(() => chat.scrollTop = chat.scrollHeight, 50);
+}
+
+// ── MARKDOWN RENDERER ──
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^(?!<[hpuol])(.+)$/gm, (m, p) => p.trim() ? m : '')
+    .replace(/\[High\]/gi, '<span class="risk-badge risk-high">HIGH</span>')
+    .replace(/\[Mid\]/gi, '<span class="risk-badge risk-mid">MID</span>')
+    .replace(/\[Low\]/gi, '<span class="risk-badge risk-low">LOW</span>');
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── START ──
+init();
+</script>
+
+</body>
+</html>
