@@ -994,6 +994,29 @@ async function sendMessage() {
   abortController = null;
 }
 
+// ── HELPERS ──
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function callClaudeWithRetry(systemPrompt, userContent, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    if (abortController && abortController.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+    try {
+      return await callClaude(systemPrompt, userContent);
+    } catch(e) {
+      if (e.name === 'AbortError') throw e;
+      const isOverloaded = e.message.includes('Overloaded') || e.message.includes('overloaded') || e.message.includes('529');
+      if (isOverloaded && attempt < retries - 1) {
+        const wait = (attempt + 1) * 4000; // 4초, 8초 순으로 대기
+        const loadId = addLoading(`⏳ 서버 과부하 — ${wait/1000}초 후 재시도 (${attempt+1}/${retries-1})...`);
+        await sleep(wait);
+        removeLoading(loadId);
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
 // ── API CALL ──
 async function callClaude(systemPrompt, userContent, history = []) {
   if (!API_KEY) {
@@ -1104,8 +1127,11 @@ async function runMultiAgent(agents, text, files, urls, loadingId, mode) {
   const userContent = await buildUserContent(text, files, urls);
   const userText = typeof userContent === 'string' ? userContent : text;
 
-  // Run agents in parallel (or sequentially for API safety)
-  for (const agentKey of agents) {
+  // Run agents sequentially with delay to avoid overload
+  for (let i = 0; i < agents.length; i++) {
+    if (abortController && abortController.signal.aborted) break;
+    const agentKey = agents[i];
+    if (i > 0) await sleep(1500); // 1.5초 간격
     const loadId = addLoading(`${agentKey} 분석 중...`);
     try {
       const systemPrompt = `${PERSONAS[agentKey]}
@@ -1116,12 +1142,13 @@ ${modeInstruction}
 ${formatInstruction}
 한국어로 응답하세요. 당신의 역할/직책을 서두에 밝히지 말고 바로 분석 내용을 시작하세요.`;
 
-      const resp = await callClaude(systemPrompt, userContent);
+      const resp = await callClaudeWithRetry(systemPrompt, userContent);
       allResponses[agentKey] = resp;
       removeLoading(loadId);
       addAgentCard(agentKey, AGENTS[agentKey], resp);
     } catch(e) {
       removeLoading(loadId);
+      if (e.name === 'AbortError') break;
       addAgentCard(agentKey, AGENTS[agentKey], `❌ 오류: ${e.message}`);
     }
   }
@@ -1162,7 +1189,10 @@ async function runGoNoGo(agents, text, files, urls, loadingId) {
   const userContent = await buildUserContent(text, files, urls);
   const votes = {};
 
-  for (const agentKey of agents) {
+  for (let i = 0; i < agents.length; i++) {
+    if (abortController && abortController.signal.aborted) break;
+    const agentKey = agents[i];
+    if (i > 0) await sleep(1500);
     const loadId = addLoading(`${agentKey} 검토 중...`);
     try {
       const systemPrompt = `${PERSONAS[agentKey]}
@@ -1175,11 +1205,12 @@ VERDICT: [GO 또는 NOGO 또는 CONDITIONAL]
 REASON: [핵심 근거 2~3문장]
 한국어로 응답.`;
 
-      const resp = await callClaude(systemPrompt, userContent);
+      const resp = await callClaudeWithRetry(systemPrompt, userContent);
       votes[agentKey] = parseVerdict(resp);
       removeLoading(loadId);
     } catch(e) {
       removeLoading(loadId);
+      if (e.name === 'AbortError') break;
       votes[agentKey] = { verdict: 'CONDITIONAL', reason: `오류: ${e.message}` };
     }
   }
